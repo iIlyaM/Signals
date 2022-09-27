@@ -1,16 +1,19 @@
 from harmonic import show_spectrum, show
+from digital import generate, calc_spectrum
 
 if __name__ == '__main__':
     frequencies_list = [1, 2, 4, 8]
 
     duration = 8
     sampling_rate = 100
-    N = sampling_rate * duration
 
-    show_spectrum(8, 150, frequencies_list)
-    show(6, 500, frequencies_list)
+    # test()
+    # generate(1, 100, 2)
+    # show_spectrum(8, 150, frequencies_list)
+    # show(6, 500, frequencies_list)
 
-    # calc_spectrum(8, 100, 8)
+    # generate(1, 100, 1)
+    calc_spectrum(1, 100, 8)
     # x = np.linspace(0, duration, sampling_rate * duration, endpoint=False)
     #
     # frequencies = x * 4
