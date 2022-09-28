@@ -22,9 +22,7 @@ def generate(duration, sampling_rate, chosen_frequency):
 
 def calc_spectrum(duration, sampling_rate, frequency):
     x, y = generate_wave(duration, sampling_rate, frequency)
-    # tstep = 1 / sampling_rate
-    N = int(sampling_rate / frequency)
-    fstep = sampling_rate / N
+
     yf = fft(y)
     xf = fftfreq(sampling_rate, 1 / sampling_rate)[1: 26]
     yf = yf[1: 26]
