@@ -7,8 +7,8 @@ from scipy import signal
 def generate_wave(duration, sampling_rate, chosen_frequency):
     x = np.linspace(0, duration, sampling_rate * duration, endpoint=False)
 
-    frequencies = x * chosen_frequency
-    y = np.cos(2 * np.pi * frequencies)
+    # frequencies = x * chosen_frequency
+    y = np.cos(2 * np.pi * x * chosen_frequency)
 
     return x, y
 
@@ -29,15 +29,10 @@ def show(duration, sampling_rate, frequencies: list):
 
 def calc_spectrum(duration, sampling_rate, frequency):
     x, y = generate_wave(duration, sampling_rate, frequency)
-    n = len(y)
-    k = np.arange(n)
-    T = n / sampling_rate
-    frq = k / T
-
-    frq = frq[:len(frq) // 2]
-    Y = np.fft.fft(y) / n
-    Y = Y[:n // 2]
-    return frq, abs(Y)
+    yf = fft(y)
+    xf = fftfreq(sampling_rate, 1 / sampling_rate)[1: 30]
+    yf = yf[1: 30]
+    return xf, abs(yf)
 
 
 def show_spectrum(duration, sampling_rate, frequencies: list):
