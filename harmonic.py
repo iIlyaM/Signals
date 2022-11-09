@@ -30,8 +30,8 @@ def show(duration, sampling_rate, frequencies: list):
 def calc_spectrum(duration, sampling_rate, frequency):
     x, y = generate_wave(duration, sampling_rate, frequency)
     yf = fft(y)
-    xf = fftfreq(sampling_rate, 1 / sampling_rate)[1: 30]
-    yf = yf[1: 30]
+    xf = fftfreq(sampling_rate, 1 / sampling_rate)[0: 30]
+    yf = yf[0: 30]
     return xf, abs(yf)
 
 
