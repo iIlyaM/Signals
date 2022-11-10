@@ -1,11 +1,11 @@
 from harmonic import show_spectrum, show
 from digital import show_digital_signal,show_digital_signal_spectrum
-from modulation import create_amplitude_modulation
+from modulation import *
 
 if __name__ == '__main__':
-    create_amplitude_modulation(1, 1000, 10, 4)
-
-
+    # create_amplitude_modulation(1, 1000, 10, 4)
+    # create_frequency_modulation(1, 1000, 4)
+    create_phase_modulation(1, 1000, 4)
      # frequencies_list = [1, 2, 4, 8]
 
     # show(1, 100, frequencies_list)
