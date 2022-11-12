@@ -125,13 +125,27 @@ def show_spectrum():
     plt.show()
 
 
-
-
-
 def spectrum_synthesis(specter_x, specter_y):
-    # frs = sorted(specter_y, reverse=True)
+    max_vals = specter_y.copy()
+    max_vals = sorted(max_vals, reverse=True)[0:3]
     # cleared_frs = [0 if i < len(frs) - 3 else i for i in frs]
-    cleared_frs = [0 if i < 216 else i for i in specter_y]
+    cleared_frs = [0 if i < max_vals[2] else i for i in specter_y]
     y = ifft(cleared_frs)
-    plt.plot(specter_x / len(cleared_frs), y)
+    # plt.plot(specter_x / len(cleared_frs), y)
+    # plt.show()
+    return specter_x / len(cleared_frs), y
+
+
+def filter_signal(x, y):
+    data = spectrum_synthesis(x, y)
+    b, a = signal.butter(6, 0.006)
+    filted_data = signal.filtfilt(b, a, data)
+
+    a_y = list()
+    for i in range(len(x)):
+        if data[1][i] > 1:
+            a_y.append(1)
+        if data[1][i] <= 1:
+            a_y.append(0)
+    plt.plot(data[0], a_y)
     plt.show()
