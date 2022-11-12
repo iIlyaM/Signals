@@ -84,7 +84,7 @@ def calc_am_spectrum(duration, sampling_rate, frequency):
 
 def calc_frm_spectrum(duration, sampling_rate, frequency):
     x = np.linspace(0, duration, sampling_rate * duration, endpoint=False)
-    frm_y = create_frequency_modulation(duration, sampling_rate, frequency)
+    frm_x, frm_y = create_frequency_modulation(duration, sampling_rate, frequency)
     yf = fft(frm_y)
     xf = fftfreq(sampling_rate, 1 / sampling_rate)[0: 220]
     yf = yf[0: 220]
