@@ -29,14 +29,14 @@ def generate_digital_signal(duration, sampling_rate, chosen_frequency):
 
 def create_amplitude_modulation(duration, sampling_rate, chosen_frequency, A):
     y_meander = generate_digital_signal(duration, sampling_rate, A)
-    y_s = generate_wave(duration, sampling_rate, A * 8)
+    y_s = generate_wave(duration, sampling_rate, A * 12)
     x = np.linspace(0, duration, sampling_rate * duration, endpoint=False)
 
     am_y = A * (y_meander * y_s)
-
-    plt.plot(x, am_y)
-    plt.show()
-    return am_y
+    #
+    # plt.plot(x, am_y)
+    # plt.show()
+    return x, am_y
 
 
 def create_frequency_modulation(duration, sampling_rate, chosen_frequency):
@@ -50,9 +50,9 @@ def create_frequency_modulation(duration, sampling_rate, chosen_frequency):
             fm_y.append(np.cos(2 * np.pi * x[i] * chosen_frequency * 6))
         else:
             fm_y.append(np.cos(2 * np.pi * x[i] * (chosen_frequency * 12)))
-    plt.plot(x, fm_y)
-    plt.show()
-    return fm_y
+    # plt.plot(x, fm_y)
+    # plt.show()
+    return x, fm_y
 
 
 def create_phase_modulation(duration, sampling_rate, chosen_frequency):
@@ -66,13 +66,14 @@ def create_phase_modulation(duration, sampling_rate, chosen_frequency):
             phm_y.append(np.cos(2 * np.pi * x[i] * chosen_frequency + 12))
         else:
             phm_y.append(np.cos(2 * np.pi * x[i] * chosen_frequency + 22))
-    plt.plot(x, phm_y)
-    plt.show()
+    # plt.plot(x, phm_y)
+    # plt.show()
+    return x, phm_y
 
 
 def calc_am_spectrum(duration, sampling_rate, frequency):
     x = np.linspace(0, duration, sampling_rate * duration, endpoint=False)
-    am_y = create_amplitude_modulation(duration, sampling_rate, frequency, 8)
+    am_x, am_y = create_amplitude_modulation(duration, sampling_rate, frequency, 8)
     yf = fft(am_y)
     xf = fftfreq(sampling_rate, 1 / sampling_rate)[0: 220]
     yf = yf[0: 220]
@@ -103,6 +104,29 @@ def calc_phm_spectrum(duration, sampling_rate, frequency):
     return xf, np.abs(yf)
 
 
+def show_modulation():
+    am_x, am_y = create_amplitude_modulation(2, 1000, 12, 2)
+    fm_x, fm_y = create_frequency_modulation(1, 1000, 4)
+    phm_x, phm_y = create_phase_modulation(1, 1000, 12)
+
+    plt.subplot(3, 1, 1)
+    plt.plot(am_x, am_y)
+    plt.title("Aмплитудная модуляция")
+    plt.grid()
+
+    plt.subplot(3, 1, 2)
+    plt.plot(fm_x, fm_y)
+    plt.title("Частотная модуляция")
+    plt.grid()
+
+    plt.subplot(3, 1, 3)
+    plt.plot(phm_x, phm_y)
+    plt.title("Фазовая модуляции")
+
+    plt.grid()
+    plt.show()
+
+
 def show_spectrum():
     # figure, axis = plt.subplots(3, 1)
     am_x, am_y = calc_am_spectrum(1, 1000, 6)
@@ -112,15 +136,34 @@ def show_spectrum():
     plt.subplot(1, 3, 1)
     plt.plot(am_x, am_y)
     plt.title("Спектр амплитудной модуляции")
+    plt.grid()
 
     plt.subplot(1, 3, 2)
     plt.plot(fm_x, fm_y)
     plt.title("Спектр частотной модуляции")
+    plt.grid()
 
     plt.subplot(1, 3, 3)
     plt.plot(phm_x, phm_y)
     plt.title("Спектр фазовой модуляции")
 
+    plt.grid()
+    plt.show()
+
+
+def show_synthesis_filter_signal():
+    x, y = calc_am_spectrum(1, 1000, 6)
+    s_x, s_y = spectrum_synthesis(x, y)
+    filt_x, filt_y = filter_signal(s_x, s_y)
+
+    plt.subplot(1, 2, 1)
+    plt.plot(s_x, s_y)
+    plt.title("Синтез спектра")
+    plt.grid()
+
+    plt.subplot(1, 2, 2)
+    plt.plot(filt_x, filt_y)
+    plt.title("Фильтрация")
     plt.grid()
     plt.show()
 
@@ -137,15 +180,15 @@ def spectrum_synthesis(specter_x, specter_y):
 
 
 def filter_signal(x, y):
-    data = spectrum_synthesis(x, y)
-    b, a = signal.butter(6, 0.006)
-    filted_data = signal.filtfilt(b, a, data)
+    b, a = signal.butter(6, 0.096)
+    filtered_data = signal.filtfilt(b, a, np.abs(y))
 
     a_y = list()
-    for i in range(len(x)):
-        if data[1][i] > 1:
+    for i in range(len(filtered_data)):
+        if filtered_data[i] > 1:
             a_y.append(1)
-        if data[1][i] <= 1:
+        else:
             a_y.append(0)
-    plt.plot(data[0], a_y)
-    plt.show()
+    plt.plot(a_y)
+    # plt.show()
+    return x, a_y
