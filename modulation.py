@@ -95,7 +95,7 @@ def calc_frm_spectrum(duration, sampling_rate, frequency):
 
 def calc_phm_spectrum(duration, sampling_rate, frequency):
     x = np.linspace(0, duration, sampling_rate * duration, endpoint=False)
-    phm_y = create_frequency_modulation(duration, sampling_rate, frequency)
+    phm, phm_y = create_frequency_modulation(duration, sampling_rate, frequency)
     yf = fft(phm_y)
     xf = fftfreq(sampling_rate, 1 / sampling_rate)[0: 220]
     yf = yf[0: 220]
